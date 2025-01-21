@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { uploadFile } from "../utils/blobStorageService"
 import { Button } from "./ui/button"
 
 export default function FileUpload({ userId }: { userId: string | null }) {
