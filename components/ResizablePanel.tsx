@@ -22,8 +22,12 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({ left, right, initialLef
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (isDragging) {
-        const newLeftWidth = (e.clientX / window.innerWidth) * 100
-        setLeftWidth(Math.max(20, Math.min(80, newLeftWidth)))
+        const container = document.getElementById("resizable-container")
+        if (container) {
+          const containerRect = container.getBoundingClientRect()
+          const newLeftWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100
+          setLeftWidth(Math.max(20, Math.min(80, newLeftWidth)))
+        }
       }
     },
     [isDragging],
@@ -40,7 +44,7 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({ left, right, initialLef
   }, [handleMouseMove, handleMouseUp])
 
   return (
-    <div className="flex h-full">
+    <div id="resizable-container" className="flex h-full">
       <div style={{ width: `${leftWidth}%` }} className="overflow-auto">
         {left}
       </div>
