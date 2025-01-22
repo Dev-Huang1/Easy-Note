@@ -16,7 +16,7 @@
     "@radix-ui/react-checkbox": "latest",
     "@tiptap/extension-color": "^2.11.2",
     "@tiptap/extension-underline": "^2.11.2",
-    "tiptap-markdown": "^0.8.10",
+    "@tiptap/extension-link": "^2.11.2",
     "@tiptap/react": "^2.11.2",
     "@tiptap/starter-kit": "^2.11.2",
     "@vercel/blob": "^0.27.1",
