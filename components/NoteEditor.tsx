@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
@@ -9,6 +9,7 @@ import type { Note } from "@/types"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, Bold, Italic, UnderlineIcon, LinkIcon } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 interface NoteEditorProps {
@@ -51,6 +52,22 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
       },
     },
   })
+
+  const setLink = useCallback(() => {
+    const previousUrl = editor.getAttributes("link").href
+    const url = window.prompt("URL", previousUrl)
+
+    if (url === null) {
+      return
+    }
+
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run()
+      return
+    }
+
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
+  }, [editor])
 
   useEffect(() => {
     if (editor && note.content !== editor.getHTML()) {
@@ -142,6 +159,7 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
         >
           <UnderlineIcon className="h-4 w-4" />
         </Button>
+        {/* Removed Font Size Select */}
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline">Color</Button>
@@ -159,27 +177,9 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
             </div>
           </PopoverContent>
         </Popover>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="icon">
-              <LinkIcon className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80">
-            <div className="flex flex-col gap-2">
-              <Input
-                placeholder="https://example.com"
-                onChange={(e) => {
-                  if (e.target.value) {
-                    editor.chain().focus().extendMarkRange("link").setLink({ href: e.target.value }).run()
-                  } else {
-                    editor.chain().focus().extendMarkRange("link").unsetLink().run()
-                  }
-                }}
-              />
-            </div>
-          </PopoverContent>
-        </Popover>
+        <Button variant="outline" size="icon" onClick={setLink}>
+          <LinkIcon className="h-4 w-4" />
+        </Button>
       </div>
       <div ref={editorRef} className="flex-1 overflow-y-auto p-4">
         <EditorContent editor={editor} />
