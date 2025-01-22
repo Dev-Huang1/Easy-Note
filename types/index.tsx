@@ -1,8 +1,8 @@
 export interface Note {
-    id: number
-    title: string
-    content: string
-    tags: string[]
-  }
-  
-  
+  id: number
+  title: string
+  content: string
+  tag: string
+  lastEdited: number
+}
+
