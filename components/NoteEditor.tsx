@@ -143,17 +143,6 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
         >
           <UnderlineIcon className="h-4 w-4" />
         </Button>
-        <Select onValueChange={(value) => editor.chain().focus().setFontSize(value).run()}>
-          <SelectTrigger className="w-[100px]">
-            <SelectValue placeholder="Font size" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="12px">Small</SelectItem>
-            <SelectItem value="16px">Normal</SelectItem>
-            <SelectItem value="20px">Large</SelectItem>
-            <SelectItem value="24px">Huge</SelectItem>
-          </SelectContent>
-        </Select>
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline">Color</Button>
