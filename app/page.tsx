@@ -4,21 +4,18 @@ import { useState, useEffect } from "react"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
 import DesktopLayout from "@/components/DesktopLayout"
 import MobileLayout from "@/components/MobileLayout"
-import WaitingRoom from "@/components/WaitingRoom"
 import type { Note } from "@/types"
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([])
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
-  const [isDesktop, isMediaQueryLoading] = useMediaQuery("(min-width: 768px)")
-  const [isNotesLoading, setIsNotesLoading] = useState(true)
+  const isDesktop = useMediaQuery("(min-width: 768px)")
 
   useEffect(() => {
     const savedNotes = localStorage.getItem("notes")
     if (savedNotes) {
       setNotes(JSON.parse(savedNotes))
     }
-    setIsNotesLoading(false)
   }, [])
 
   useEffect(() => {
@@ -30,26 +27,25 @@ export default function Home() {
       id: Date.now(),
       title: "New Note",
       content: "",
-      tags: [],
+      tag: "",
+      lastEdited: Date.now(),
     }
     setNotes([...notes, newNote])
     setSelectedNote(newNote)
   }
 
   const updateNote = (updatedNote: Note) => {
-    const updatedNotes = notes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
+    const updatedNotes = notes.map((note) =>
+      note.id === updatedNote.id ? { ...updatedNote, lastEdited: Date.now() } : note,
+    )
     setNotes(updatedNotes)
-    setSelectedNote(updatedNote)
+    setSelectedNote({ ...updatedNote, lastEdited: Date.now() })
   }
 
   const deleteNote = (id: number) => {
     const updatedNotes = notes.filter((note) => note.id !== id)
     setNotes(updatedNotes)
     setSelectedNote(null)
-  }
-
-  if (isMediaQueryLoading || isNotesLoading) {
-    return <WaitingRoom />
   }
 
   return isDesktop ? (
