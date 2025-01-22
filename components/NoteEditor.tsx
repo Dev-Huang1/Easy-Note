@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import Underline from "@tiptap/extension-underline"
-import TextStyle from "@tiptap/extension-text-style"
-import Color from "@tiptap/extension-color"
+import Markdown from "@tiptap/extension-markdown"
 import type { Note } from "@/types"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Bold, Italic, UnderlineIcon, ChevronLeft } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ChevronLeft } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface NoteEditorProps {
   note: Note
@@ -18,17 +17,24 @@ interface NoteEditorProps {
 
 export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps) {
   const [title, setTitle] = useState(note.title)
-  const [tags, setTags] = useState<string[]>(note.tags.slice(0, 3))
+  const [tag, setTag] = useState(note.tag || "")
+  const [isMarkdown, setIsMarkdown] = useState(false)
 
   const editor = useEditor({
-    extensions: [StarterKit, Underline, TextStyle, Color],
+    extensions: [
+      StarterKit,
+      Markdown.configure({
+        html: false,
+        transformPastedText: true,
+      }),
+    ],
     content: note.content,
     onUpdate: ({ editor }) => {
       updateNote({
         ...note,
         title,
         content: editor.getHTML(),
-        tags,
+        tag,
       })
     },
   })
@@ -38,7 +44,7 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
       editor.commands.setContent(note.content)
     }
     setTitle(note.title)
-    setTags(note.tags.slice(0, 3))
+    setTag(note.tag || "")
   }, [note, editor])
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,11 +52,21 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
     updateNote({ ...note, title: e.target.value })
   }
 
-  const handleTagChange = (index: number, value: string) => {
-    const newTags = [...tags]
-    newTags[index] = value
-    setTags(newTags)
-    updateNote({ ...note, tags: newTags })
+  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTag(e.target.value)
+    updateNote({ ...note, tag: e.target.value })
+  }
+
+  const toggleMarkdown = () => {
+    setIsMarkdown(!isMarkdown)
+    if (editor) {
+      editor.setOptions({
+        extensions: [
+          StarterKit,
+          ...(isMarkdown ? [] : [Markdown.configure({ html: false, transformPastedText: true })]),
+        ],
+      })
+    }
   }
 
   if (!editor) {
@@ -74,52 +90,42 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
         />
       </div>
       <div className="border-b p-2 flex items-center space-x-2">
-        {[0, 1, 2].map((index) => (
-          <Input
-            key={index}
-            type="text"
-            value={tags[index] || ""}
-            onChange={(e) => handleTagChange(index, e.target.value)}
-            placeholder={`Tag ${index + 1}`}
-            className="bg-transparent border-none focus:outline-none focus:ring-0"
-          />
-        ))}
+        <Input
+          type="text"
+          value={tag}
+          onChange={handleTagChange}
+          placeholder="Add a tag"
+          className="bg-transparent border-none focus:outline-none focus:ring-0"
+        />
+        <div className="flex items-center space-x-2">
+          <Checkbox id="markdown" checked={isMarkdown} onCheckedChange={toggleMarkdown} />
+          <label
+            htmlFor="markdown"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Use Markdown
+          </label>
+        </div>
       </div>
-      <div className="border-b p-1 flex items-center space-x-1">
-        <Button
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          variant={editor.isActive("bold") ? "secondary" : "ghost"}
-          size="icon"
-        >
-          <Bold className="h-4 w-4" />
-        </Button>
-        <Button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          variant={editor.isActive("italic") ? "secondary" : "ghost"}
-          size="icon"
-        >
-          <Italic className="h-4 w-4" />
-        </Button>
-        <Button
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          variant={editor.isActive("underline") ? "secondary" : "ghost"}
-          size="icon"
-        >
-          <UnderlineIcon className="h-4 w-4" />
-        </Button>
-        <Select onValueChange={(value) => editor.chain().focus().setColor(value).run()}>
-          <SelectTrigger className="w-[100px]">
-            <SelectValue placeholder="Color" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="#000000">Black</SelectItem>
-            <SelectItem value="#FF0000">Red</SelectItem>
-            <SelectItem value="#00FF00">Green</SelectItem>
-            <SelectItem value="#0000FF">Blue</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <EditorContent editor={editor} className="flex-1 overflow-y-auto p-4 prose max-w-none" />
+      {isMarkdown ? (
+        <Tabs defaultValue="edit" className="flex-1 flex flex-col">
+          <TabsList>
+            <TabsTrigger value="edit">Edit</TabsTrigger>
+            <TabsTrigger value="preview">Preview</TabsTrigger>
+          </TabsList>
+          <TabsContent value="edit" className="flex-1">
+            <EditorContent editor={editor} className="h-full overflow-y-auto p-4" />
+          </TabsContent>
+          <TabsContent value="preview" className="flex-1">
+            <div
+              className="prose max-w-none h-full overflow-y-auto p-4"
+              dangerouslySetInnerHTML={{ __html: editor.getHTML() }}
+            />
+          </TabsContent>
+        </Tabs>
+      ) : (
+        <EditorContent editor={editor} className="flex-1 overflow-y-auto p-4" />
+      )}
     </div>
   )
 }
