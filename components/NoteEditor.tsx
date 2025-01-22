@@ -33,7 +33,6 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
       Underline,
       TextStyle,
       Color,
-      Link,
     ],
     content: note.content,
     onUpdate: ({ editor }) => {
