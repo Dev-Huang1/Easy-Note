@@ -4,7 +4,6 @@ import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
 import TextStyle from "@tiptap/extension-text-style"
 import Color from "@tiptap/extension-color"
-import Link from "@tiptap/extension-link"
 import type { Note } from "@/types"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -51,22 +50,6 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
       },
     },
   })
-
-  const setLink = useCallback(() => {
-    const previousUrl = editor.getAttributes("link").href
-    const url = window.prompt("URL", previousUrl)
-
-    if (url === null) {
-      return
-    }
-
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run()
-      return
-    }
-
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
-  }, [editor])
 
   useEffect(() => {
     if (editor && note.content !== editor.getHTML()) {
@@ -176,9 +159,6 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
             </div>
           </PopoverContent>
         </Popover>
-        <Button variant="outline" size="icon" onClick={setLink}>
-          <LinkIcon className="h-4 w-4" />
-        </Button>
       </div>
       <div ref={editorRef} className="flex-1 overflow-y-auto p-4">
         <EditorContent editor={editor} />
