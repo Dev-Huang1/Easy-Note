@@ -30,13 +30,22 @@ export default function NoteList({ notes, selectedNote, setSelectedNote, addNote
   const filteredNotes = notes.filter(
     (note) =>
       note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      note.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())),
+      (note.tag && note.tag.toLowerCase().includes(searchTerm.toLowerCase())),
   )
+
+  const getPreview = (content: string) => {
+    const stripped = content.replace(/<[^>]+>/g, "")
+    return stripped.length > 100 ? stripped.slice(0, 100) + "..." : stripped
+  }
+
+  const formatDate = (date: number) => {
+    return new Date(date).toLocaleString()
+  }
 
   return (
     <div className="h-full flex flex-col bg-gray-50 border-r">
       <div className="p-4 flex items-center space-x-2 border-b">
-        <Image src="/logo.svg" alt="Easy Note Logo" width={24} height={24} />
+        <Image src="/easy-note-logo.svg" alt="Easy Note Logo" width={24} height={24} />
         <span className="font-semibold text-lg">Easy Note</span>
       </div>
       <div className="p-4 flex items-center space-x-2">
@@ -90,13 +99,11 @@ export default function NoteList({ notes, selectedNote, setSelectedNote, addNote
                 </AlertDialogContent>
               </AlertDialog>
             </div>
-            <div className="text-xs text-gray-500 mt-1 truncate">
-              {note.tags.slice(0, 3).map((tag) => (
-                <span key={tag} className="mr-2">
-                  #{tag}
-                </span>
-              ))}
+            <div className="text-xs text-gray-500 mt-1">
+              {note.tag && <span className="mr-2">#{note.tag}</span>}
+              <span>{formatDate(note.lastEdited)}</span>
             </div>
+            <p className="text-sm text-gray-600 mt-1 line-clamp-2">{getPreview(note.content)}</p>
           </div>
         ))}
       </div>
