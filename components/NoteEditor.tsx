@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import Markdown from "@tiptap/extension-markdown"
+import { Markdown } from 'tiptap-markdown';
 import type { Note } from "@/types"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
