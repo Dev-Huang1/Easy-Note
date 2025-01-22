@@ -1,6 +1,7 @@
 import type { Note } from "@/types"
 import NoteList from "./NoteList"
 import NoteEditor from "./NoteEditor"
+import ResizablePanel from "./ResizablePanel"
 
 interface DesktopLayoutProps {
   notes: Note[]
@@ -20,23 +21,28 @@ export default function DesktopLayout({
   deleteNote,
 }: DesktopLayoutProps) {
   return (
-    <div className="flex h-screen bg-white">
-      <div className="w-64 border-r">
-        <NoteList
-          notes={notes}
-          selectedNote={selectedNote}
-          setSelectedNote={setSelectedNote}
-          addNote={addNote}
-          deleteNote={deleteNote}
-        />
-      </div>
-      <div className="flex-1">
-        {selectedNote ? (
-          <NoteEditor note={selectedNote} updateNote={updateNote} />
-        ) : (
-          <div className="h-full flex items-center justify-center text-gray-400">Select a note or create a new one</div>
-        )}
-      </div>
+    <div className="h-screen bg-white">
+      <ResizablePanel
+        left={
+          <NoteList
+            notes={notes}
+            selectedNote={selectedNote}
+            setSelectedNote={setSelectedNote}
+            addNote={addNote}
+            deleteNote={deleteNote}
+          />
+        }
+        right={
+          selectedNote ? (
+            <NoteEditor note={selectedNote} updateNote={updateNote} />
+          ) : (
+            <div className="h-full flex items-center justify-center text-gray-400">
+              Select a note or create a new one
+            </div>
+          )
+        }
+        initialLeftWidth={30}
+      />
     </div>
   )
 }
