@@ -97,15 +97,6 @@ export default function NoteEditor({ note, updateNote, onBack }: NoteEditorProps
           placeholder="Add a tag"
           className="bg-transparent border-none focus:outline-none focus:ring-0"
         />
-        <div className="flex items-center space-x-2">
-          <Checkbox id="markdown" checked={isMarkdown} onCheckedChange={toggleMarkdown} />
-          <label
-            htmlFor="markdown"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Use Markdown
-          </label>
-        </div>
       </div>
       {isMarkdown ? (
         <Tabs defaultValue="edit" className="flex-1 flex flex-col">
