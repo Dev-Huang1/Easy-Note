@@ -1,5 +1,5 @@
 {
-  "name": "out",
+  "name": "easy-note",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -16,7 +16,7 @@
     "@radix-ui/react-checkbox": "latest",
     "@tiptap/extension-color": "^2.11.2",
     "@tiptap/extension-underline": "^2.11.2",
-    "@tiptap/extension-markdown": "^2.11.2",
+    "@tiptap/extension-markdown": "^0.8.10",
     "@tiptap/react": "^2.11.2",
     "@tiptap/starter-kit": "^2.11.2",
     "@vercel/blob": "^0.27.1",
