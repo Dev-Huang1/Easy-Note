@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
@@ -7,7 +7,7 @@ import Color from "@tiptap/extension-color"
 import type { Note } from "@/types"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Bold, Italic, UnderlineIcon, LinkIcon } from "lucide-react"
+import { ChevronLeft, Bold, Italic, UnderlineIcon } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 interface NoteEditorProps {
