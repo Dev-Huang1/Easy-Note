@@ -45,7 +45,7 @@ export default function NoteList({ notes, selectedNote, setSelectedNote, addNote
   return (
     <div className="h-full flex flex-col bg-gray-50 border-r">
       <div className="p-4 flex items-center space-x-2 border-b">
-        <Image src="/easy-note-logo.svg" alt="Easy Note Logo" width={24} height={24} />
+        <Image src="/logo.svg" alt="Easy Note Logo" width={24} height={24} />
         <span className="font-semibold text-lg">Easy Note</span>
       </div>
       <div className="p-4 flex items-center space-x-2">
