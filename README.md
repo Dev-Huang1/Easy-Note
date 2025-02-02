@@ -1,7 +1,5 @@
 <div align="center">
 
-<!--![Easy Note Banner](assets/images/banner.png)-->
-
 # Easy Notes
 
 ![GitHub stars](https://img.shields.io/github/stars/Dev-Huang1/Easy-Note.svg?style=for-the-badge)
